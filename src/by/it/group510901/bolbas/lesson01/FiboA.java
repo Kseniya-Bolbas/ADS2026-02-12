@@ -29,21 +29,26 @@ public class FiboA {
     }
 
     private int calc(int n) {
-        //здесь простейший вариант, в котором код совпадает
-        //с математическим определением чисел Фибоначчи
-        //время O(2^n)
+        n = 10;
+        long[] fib = new long[n];
+        fib[0] = 0;
+        fib[1] = 1;
+        for (int i = 2; i < n; i++) {
+            fib[i] = fib[i - 1] + fib[i - 2];
+        }
+// Вывод: 0 1 1 2 3 5 8 13 21 34
         return 0;
     }
 
 
     BigInteger slowA(Integer n) {
-        //рекурсия
-        //здесь нужно реализовать вариант без ограничения на размер числа,
-        //в котором код совпадает с математическим определением чисел Фибоначчи
-        //время O(2^n)
+        if (n == null || n < 0) return BigInteger.ZERO;
+        return BigInteger.valueOf(fibonacci(n));
+    }
 
-
-        return BigInteger.ZERO;
+    private int fibonacci(int n) {
+        if (n <= 1) return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
     }
 
 
