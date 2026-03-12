@@ -1,4 +1,4 @@
-package by.it.group551001.bolbas.lesson01.lesson2;
+package by.it.group551001.bolbas.lesson2;
 /*
 Даны
 1) объем рюкзака 4
@@ -16,6 +16,7 @@ package by.it.group551001.bolbas.lesson01.lesson2;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
@@ -49,7 +50,25 @@ public class C_GreedyKnapsack {
         //кроме того, можете описать свой компаратор в классе Item
 
         //ваше решение.
+        Arrays.sort(items);
 
+        int remainingWeight = W;
+
+        // Берем предметы пока есть место в рюкзаке
+        for (Item item : items) {
+            if (remainingWeight <= 0) break;
+
+            if (item.weight <= remainingWeight) {
+                // Предмет помещается целиком
+                result += item.cost;
+                remainingWeight -= item.weight;
+            } else {
+                // Берем часть предмета
+                double fraction = (double) remainingWeight / item.weight;
+                result += item.cost * fraction;
+                remainingWeight = 0;
+            }
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
@@ -75,7 +94,12 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
+            double thisUnitCost = (double) this.cost / this.weight;
+            double otherUnitCost = (double) o.cost / o.weight;
 
+            // Для сортировки по убыванию
+            if (thisUnitCost > otherUnitCost) return -1;
+            if (thisUnitCost < otherUnitCost) return 1;
 
             return 0;
         }

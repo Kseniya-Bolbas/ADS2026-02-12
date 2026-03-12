@@ -1,7 +1,8 @@
-package by.it.group551001.bolbas.lesson01.lesson2;
+package by.it.group551001.bolbas.lesson2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 /*
 Даны интервальные события events
 реализуйте метод calcStartTimes, так, чтобы число принятых к выполнению
@@ -29,10 +30,19 @@ public class B_Sheduler {
         //в период [from, int] (включительно).
         //оптимизация проводится по наибольшему числу непересекающихся событий.
         //Начало и конец событий могут совпадать.
+        Arrays.sort(events, (Event a, Event b) -> Integer.compare(a.stop, b.stop));
         List<Event> result;
         result = new ArrayList<>();
         //ваше решение.
-
+        int lastEndTime = from;
+        for (Event event : events) {
+            if (event.start >= from && event.stop <= to) {
+               if (event.start >= lastEndTime) {
+                    result.add(event);
+                    lastEndTime = event.stop; // Обновляем время окончания
+                }
+            }
+        }
 
         return result;          //вернем итог
     }
