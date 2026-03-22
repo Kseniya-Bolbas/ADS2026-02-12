@@ -2,6 +2,8 @@ package by.it.group551001.bolbas.lesson3;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 // Lesson 3. B_Huffman.
@@ -55,9 +57,35 @@ public class B_Huffman {
         Scanner scanner = new Scanner(inputStream);
         Integer count = scanner.nextInt();
         Integer length = scanner.nextInt();
+        scanner.nextLine();
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         //тут запишите ваше решение
+        Map<String, Character> codeToChar = new HashMap<>();
 
+        // Читаем коды символов
+        for (int i = 0; i < count; i++) {
+            String line = scanner.nextLine();
+            // Извлекаем символ и код из строки формата "a: 0"
+            char symbol = line.charAt(0);
+            // Код начинается после ": " (двоеточие и пробел)
+            String code = line.substring(3).trim();
+            codeToChar.put(code, symbol);
+        }
+
+        // Читаем закодированную строку
+        String encoded = scanner.nextLine().trim();
+
+        StringBuilder currentCode = new StringBuilder();
+        for (int i = 0; i < encoded.length(); i++) {
+            currentCode.append(encoded.charAt(i));
+
+            // Проверяем, есть ли такой код в нашей карте
+            if (codeToChar.containsKey(currentCode.toString())) {
+                // Нашли соответствие - добавляем символ в результат
+                result.append(codeToChar.get(currentCode.toString()));
+                currentCode.setLength(0); // Сбрасываем текущий код
+            }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         return result.toString(); //01001100100111
