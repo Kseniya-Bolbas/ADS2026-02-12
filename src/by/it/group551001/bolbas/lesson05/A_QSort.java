@@ -3,6 +3,7 @@ package by.it.group551001.bolbas.lesson05;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Видеорегистраторы и площадь.
@@ -60,7 +61,15 @@ public class A_QSort {
         //читаем сами отрезки
         for (int i = 0; i < n; i++) {
             //читаем начало и конец каждого отрезка
-            segments[i] = new Segment(scanner.nextInt(), scanner.nextInt());
+            int start = scanner.nextInt();
+            int end = scanner.nextInt();
+            if (start > end) {
+                int temp = start;
+                start = end;
+                end = temp;
+            }
+
+            segments[i] = new Segment(start, end);
         }
         //читаем точки
         for (int i = 0; i < m; i++) {
@@ -69,7 +78,45 @@ public class A_QSort {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        Arrays.sort(segments);
 
+        Event[] events = new Event[2 * n];
+        for (int i = 0; i < n; i++) {
+            events[2 * i] = new Event(segments[i].start, true);  // start event
+            events[2 * i + 1] = new Event(segments[i].stop, false); // end event
+        }
+
+        Arrays.sort(events, (e1, e2) -> {
+            if (e1.coordinate != e2.coordinate) {
+                return Integer.compare(e1.coordinate, e2.coordinate);
+            }
+            // Start events come before end events at the same coordinate
+            if (e1.isStart && !e2.isStart) return -1;
+            if (!e1.isStart && e2.isStart) return 1;
+            return 0;
+        });
+
+        Point[] pointObjects = new Point[m];
+        for (int i = 0; i < m; i++) {
+            pointObjects[i] = new Point(points[i], i);
+        }
+
+        Arrays.sort(pointObjects, (p1, p2) -> Integer.compare(p1.coordinate, p2.coordinate));
+
+        int activeCount = 0;
+        int eventIndex = 0;
+
+        for (Point point : pointObjects) {
+            while (eventIndex < events.length && events[eventIndex].coordinate <= point.coordinate) {
+                if (events[eventIndex].isStart) {
+                    activeCount++;
+                } else {
+                    activeCount--;
+                }
+                eventIndex++;
+            }
+            result[point.originalIndex] = activeCount;
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
@@ -89,9 +136,29 @@ public class A_QSort {
         @Override
         public int compareTo(Segment o) {
             //подумайте, что должен возвращать компаратор отрезков
+            if (this.start != o.start) {
+                return Integer.compare(this.start, o.start);
+            }
+            return Integer.compare(this.stop, o.stop);
+        }
+    }
+    private class Event {
+        int coordinate;
+        boolean isStart;
 
-            return 0;
+        Event(int coordinate, boolean isStart) {
+            this.coordinate = coordinate;
+            this.isStart = isStart;
         }
     }
 
+    private class Point {
+        int coordinate;
+        int originalIndex;
+
+        Point(int coordinate, int originalIndex) {
+            this.coordinate = coordinate;
+            this.originalIndex = originalIndex;
+        }
+    }
 }
